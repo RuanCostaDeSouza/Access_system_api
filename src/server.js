@@ -13,5 +13,5 @@ app.use(Routes)
 
 connection.authenticate().then(()=>{
 
-    app.listen(PORT,()=>{console.log(`Server connected in Port ${Port}`)})
+    app.listen(PORT,()=>{console.log(`Server connected in Port ${PORT}`)})
 }).catch(erro=>console.log)
