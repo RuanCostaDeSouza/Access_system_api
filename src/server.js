@@ -6,12 +6,12 @@ const connection = require('./database')
 
 const app = express();
 app.use(cors())
-const Port = process.env.Port;
+const PORT = process.env.PORT||3000;
 
 app.use(express.json())
 app.use(Routes)
 
 connection.authenticate().then(()=>{
 
-    app.listen(Port,()=>{console.log(`Server connected in Port ${Port}`)})
+    app.listen(PORT,()=>{console.log(`Server connected in Port ${Port}`)})
 }).catch(erro=>console.log)
