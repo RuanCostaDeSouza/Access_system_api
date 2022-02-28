@@ -1,6 +1,7 @@
 const User = require('../model/User')
 const Bcrypt = require('bcrypt')
-
+const jwt = require('jsonwebtoken')
+const AuthConfig = require('../config/auth.json')
 
 module.exports = {
     async store (req,res) {
@@ -21,8 +22,15 @@ module.exports = {
                 const password = await Bcrypt.hash(req.body.password,10)
                 
                 const user = await User.create({name, email, password})
+
+                const token = jwt.sign({id:user.id}, AuthConfig.secret, {
+                    expiresIn:86500,
+                })
                 
-                return res.status(200).json(user)
+                return res.status(200).json({
+                    user,
+                    token,
+                })
             }
 
             

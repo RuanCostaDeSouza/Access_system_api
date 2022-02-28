@@ -1,7 +1,8 @@
 const User = require('../model/User')
 const Bcrypt = require('bcrypt')
 const nodemailer = require('nodemailer')
-const { password } = require('../config/database')
+const jwt = require('jsonwebtoken')
+const AuthConfig = require('../config/auth.json')
 
 module.exports = {
    
@@ -23,9 +24,15 @@ module.exports = {
                 const validatePassword = await Bcrypt.compare(password,user.password)
                 
                 if(validatePassword){
-    
+                    
+                    const token = jwt.sign({id:user.id}, AuthConfig.secret, {
+                        expiresIn:86500,
+                    })
+
                     return res.status(200).json({
-                        mensage:"usuario logado!"
+                        mensage:"usuario logado!",
+                        user,
+                        token,
                     })
                 }else{
                     res.status(400).json({
