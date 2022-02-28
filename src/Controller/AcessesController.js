@@ -24,7 +24,7 @@ module.exports = {
                 const validatePassword = await Bcrypt.compare(password,user.password)
                 
                 if(validatePassword){
-                    
+                    user.password = undefined
                     const token = jwt.sign({id:user.id}, AuthConfig.secret, {
                         expiresIn:86500,
                     })
