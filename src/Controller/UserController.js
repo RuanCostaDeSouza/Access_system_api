@@ -15,7 +15,7 @@ module.exports = {
             
             if(verifyEmail){
                 res.status(400).json({
-                    mensage:"E-mail já cadastrado por favor informar um email valido!"
+                    message:"Email already exists, please try again with a new email!"
                 })
             }else{
 
@@ -36,31 +36,33 @@ module.exports = {
             
         }catch(error){
             return res.status(500).json({
-                mensage:"Ocorreu um erro por favor tente novamente mais tarde!"
+                message:"Internal server error, please try again later!"
             })
         }
     },
+    
     async changePassword (req,res){
-        const {email, newPassword} = req.body;
+        const id = req.userId;
 
-        const user = await User.findOne({where:{email}});
+        const {newPassword} = req.body
+        
+        const user = await User.findByPk(id);
 
         if(!user){
             return res.status(400).json({
-                message:"Error: nenhum e-mail encontrado"
+                message:"User not found!"
             })
         }else{
             const hashPassword = await Bcrypt.hash(newPassword,10)
 
             await User.update({
                 password:hashPassword
-            },{where:{email}})
-
-                return res.status(200).json({
-                    message:"Senha alterada com sucesso!",
-                })
-                
-           
+            },{where:{id}}).then(()=>{
+                return res.status(200).json({message:"Password changed successfully"})
+            }).catch((erro)=>{
+                console.log(erro);
+                return res.status(500).json({message:"Internal server error, please try again later"})
+            })
         }
     }
     
