@@ -12,21 +12,21 @@ module.exports = {
             const verifyEmail = await User.findOne({
                 where:{email:email}
             })
-            
-            if(verifyEmail){
+            if(verifyEmail !== null){
                 res.status(400).json({
                     message:"Email already exists, please try again with a new email!"
                 })
             }else{
-
+                
                 const password = await Bcrypt.hash(req.body.password,10)
                 
                 const user = await User.create({name, email, password})
-
-                const token = jwt.sign({id:user.id}, AuthConfig.secret, {
+                
+                const token = jwt.sign({id:user.id,email:user.email}, AuthConfig.secret, {
                     expiresIn:86500,
                 })
                 
+                console.log("passou aqui")
                 return res.status(200).json({
                     user,
                     token,
@@ -42,7 +42,7 @@ module.exports = {
     },
     
     async changePassword (req,res){
-        const id = req.userId;
+        const {id} = req.params;
 
         const {newPassword} = req.body
         
@@ -64,6 +64,17 @@ module.exports = {
                 return res.status(500).json({message:"Internal server error, please try again later"})
             })
         }
+    },
+    async ShowUser (req,res){
+        const {email} = req.params;
+
+        const user = await User.findOne({where:{email}})
+
+        if(!user){
+            return res.status(400)
+        }
+
+        return res.status(200).json(user)
     }
     
 }

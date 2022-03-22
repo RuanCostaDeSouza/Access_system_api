@@ -7,6 +7,6 @@ const Route = Express.Router();
 Route
     .post('/login',AcessesController.login)
     // .put('/change/password',AuthMiddleware,)
-    .post('/RecoverPassword', AcessesController.recorverPasswordSendEmail)
+    
 
 module.exports = Route
